@@ -36,12 +36,10 @@ if(MSVC)
 elseif(CMAKE_SYSTEM_NAME MATCHES Darwin)
     set(CMAKE_MACOSX_RPATH 1)
 endif()
-add_library(ffi_shared SHARED $<TARGET_OBJECTS:objlib> ${OBJECTS_LIST})
 
 set_target_properties(ffi_static PROPERTIES OUTPUT_NAME ffi)
-set_target_properties(ffi_shared PROPERTIES OUTPUT_NAME ffi)
 
-install(TARGETS ffi_static ffi_shared
+install(TARGETS ffi_static
     EXPORT ${PROJECT_NAME}Targets
     RUNTIME DESTINATION bin
     ARCHIVE DESTINATION lib
