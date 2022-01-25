@@ -184,6 +184,7 @@ check_symbol_exists(mkostemp stdlib.h HAVE_MKOSTEMP)
 cmake_pop_check_state()
 
 if (NOT MSVC)
+    # Check whether .eh_frame sections should be read-only.
     find_program(OBJDUMP objdump)
     find_program(NM NAMES nm llvm-nm)
 
@@ -223,6 +224,7 @@ if (NOT MSVC)
     ]==])
     check_c_source_runs("${check_src}" HAVE_AS_X86_PCREL)
 
+    # Check whether assembler supports unwind section type
     execute_process(
         COMMAND
             sh -c "echo '.text;.globl foo;foo:;jmp bar;.section .eh_frame,\"a\",@unwind;bar:' | ${CMAKE_C_COMPILER} ${CMAKE_C_FLAGS} -xassembler -Wa,--fatal-warnings -c -o conftest.o - 2>&1 &&
@@ -252,6 +254,7 @@ if (NOT MSVC)
     cmake_pop_check_state()
 endif()
 
+# Check whether symbols are underscored
 file(WRITE ${CMAKE_BINARY_DIR}/conftest.c "void nm_test_func(){} int main(){nm_test_func();return 0;}")
 
 if(MSVC)
@@ -289,6 +292,7 @@ else()
     message(STATUS "Checking if symbols are underscored - no")
 endif()
 
+# Check whether assembler supports .cfi_* directives
 check_c_source_compiles(
     "
     asm (\".cfi_sections\\\\n\\\\t.cfi_startproc\\\\n\\\\t.cfi_endproc\");
