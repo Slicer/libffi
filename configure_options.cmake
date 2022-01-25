@@ -24,7 +24,7 @@ set(LT_OBJDIR .libs/)
 check_type_size (size_t SIZEOF_SIZE_T)
 
 if(SIZEOF_SIZE_T STREQUAL "")
-    set(size_t "unsinged int")
+    set(size_t "unsigned int")
 endif()
 
 if(MSVC)
