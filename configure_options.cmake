@@ -215,21 +215,13 @@ if (NOT MSVC)
         message(STATUS "Checking if .eh_frame section is read-only - no")
     endif()
 
-    execute_process(
-        COMMAND sh -c "echo '.text; foo: nop; .data; .long foo-.; .text' | ${CMAKE_C_COMPILER} ${CMAKE_C_FLAGS} -xassembler -c -o conftest.o - 2>&1"
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        OUTPUT_VARIABLE IGNORE
-        ERROR_VARIABLE IGNORE
-        RESULT_VARIABLE HAVE_AS_X86_PCREL_EXITCODE)
-
-    file(REMOVE ${CMAKE_BINARY_DIR}/conftest.*)
-
-    if(HAVE_AS_X86_PCREL_EXITCODE EQUAL "0")
-        set(HAVE_AS_X86_PCREL 1)
-        message(STATUS "Checking HAVE_AS_X86_PCREL - yes")
-    else()
-        message(STATUS "Checking HAVE_AS_X86_PCREL - no")
-    endif()
+    # Check whether assembler supports PC relative relocs
+    set(check_src [==[
+    int main() {
+        __asm__ __volatile__ (".text; ha: nop; .data; .long ha-.; .text");
+    }
+    ]==])
+    check_c_source_runs("${check_src}" HAVE_AS_X86_PCREL)
 
     execute_process(
         COMMAND
@@ -249,20 +241,15 @@ if (NOT MSVC)
         message(STATUS "Checking HAVE_AS_X86_64_UNWIND_SECTION_TYPE - no")
     endif()
 
-    execute_process(
-        COMMAND sh -c "echo 'int __attribute__ ((visibility (\"hidden\"))) foo(void){return 1;}' | ${CMAKE_C_COMPILER} ${CMAKE_C_FLAGS} -xc -Werror -S -o- - 2>&1 |
-                       grep -q '\\.hidden.*foo'"
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        OUTPUT_VARIABLE IGNORE
-        ERROR_VARIABLE IGNORE
-        RESULT_VARIABLE HAVE_HIDDEN_VISIBILITY_ATTRIBUTE_EXITCODE)
-
-    if(HAVE_HIDDEN_VISIBILITY_ATTRIBUTE_EXITCODE EQUAL "0")
-        set(HAVE_HIDDEN_VISIBILITY_ATTRIBUTE 1)
-        message(STATUS "Checking HAVE_HIDDEN_VISIBILITY_ATTRIBUTE - yes")
-    else()
-        message(STATUS "Checking HAVE_HIDDEN_VISIBILITY_ATTRIBUTE - no")
-    endif()
+    # Check compiler for symbol visibility support
+    set(check_src [==[
+    __attribute__((visibility("hidden"))) int bar(void) {};
+    int main() {bar();}
+    ]==])
+    cmake_push_check_state()
+    set(CMAKE_REQUIRED_FLAGS "-Werror")
+    check_c_source_compiles("${check_src}" HAVE_HIDDEN_VISIBILITY_ATTRIBUTE)
+    cmake_pop_check_state()
 endif()
 
 file(WRITE ${CMAKE_BINARY_DIR}/conftest.c "void nm_test_func(){} int main(){nm_test_func();return 0;}")
