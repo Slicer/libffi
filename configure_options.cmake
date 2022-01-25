@@ -3,6 +3,7 @@ include(CheckCSourceRuns)
 include(CheckFunctionExists)
 include(CheckIncludeFile)
 include(CheckIncludeFiles)
+include(CMakePushCheckState)
 include(CheckSymbolExists)
 include(CheckTypeSize)
 
@@ -50,6 +51,7 @@ elseif(TARGET_PLATFORM STREQUAL X86_64)
         src/x86/unix64.S)
 
     if(SIZEOF_SIZE_T EQUAL 4 AND TARGET_PLATFORM MATCHES X86.*)
+        cmake_push_check_state()
         set(CMAKE_REQUIRED_FLAGS "-Werror")
 
         check_c_source_compiles(
@@ -61,7 +63,7 @@ elseif(TARGET_PLATFORM STREQUAL X86_64)
             "
             TARGET_X32)
 
-        set(CMAKE_REQUIRED_FLAGS)
+        cmake_pop_check_state()
     endif()
 
     if(NOT TARGET_X32)
@@ -175,9 +177,11 @@ check_include_file(unistd.h HAVE_UNISTD_H)
 check_include_files("stdlib.h;stdarg.h;string.h;float.h" STDC_HEADERS)
 
 check_symbol_exists(memcpy string.h HAVE_MEMCPY)
+
+cmake_push_check_state()
 set(CMAKE_REQUIRED_DEFINITIONS "-D_GNU_SOURCE")
 check_symbol_exists(mkostemp stdlib.h HAVE_MKOSTEMP)
-set(CMAKE_REQUIRED_DEFINITIONS)
+cmake_pop_check_state()
 
 if (NOT MSVC)
     find_program(OBJDUMP objdump)
