@@ -24,7 +24,7 @@
 #cmakedefine FFI_MMAP_EXEC_EMUTRAMP_PAX
 
 /* Cannot use malloc on this target, so, we revert to alternative means */
-#cmakedefine01 FFI_MMAP_EXEC_WRIT
+#cmakedefine FFI_MMAP_EXEC_WRIT 1
 
 /* Define this if you do not want support for the raw API. */
 #cmakedefine01 FFI_NO_RAW_API
