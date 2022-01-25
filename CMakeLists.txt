@@ -3,15 +3,11 @@ project(libffi C)
 
 set(SOURCES_LIST
     src/closures.c
+    $<$<CONFIG:Debug>:src/debug.c>
     src/java_raw_api
     src/prep_cif.c
     src/raw_api.c
     src/types.c)
-
-if(CMAKE_BUILD_TYPE MATCHES DEBUG)
-    list(APPEND SOURCES_LIST src/debug.c)
-    add_definitions(-DFFI_DEBUG)
-endif()
 
 include(configure_platform.cmake)
 include(configure_options.cmake)
@@ -27,6 +23,8 @@ add_definitions(-DFFI_BUILDING)
 
 add_library(objlib OBJECT ${SOURCES_LIST})
 set_property(TARGET objlib PROPERTY POSITION_INDEPENDENT_CODE 1)
+
+target_compile_definitions(objlib PUBLIC $<$<CONFIG:Debug>:FFI_DEBUG>)
 
 add_library(ffi_static STATIC $<TARGET_OBJECTS:objlib>)
 
