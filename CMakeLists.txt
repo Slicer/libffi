@@ -37,7 +37,10 @@ elseif(CMAKE_SYSTEM_NAME MATCHES Darwin)
 endif()
 add_library(ffi_shared SHARED $<TARGET_OBJECTS:objlib> ${OBJECTS_LIST})
 
-set_target_properties(ffi_static PROPERTIES OUTPUT_NAME ffi)
+# On Posix systems, libffi.so and libffi.a can co-exist.
+if(NOT WIN32 OR CYGWIN)
+  set_target_properties(ffi_static PROPERTIES OUTPUT_NAME ffi)
+endif()
 set_target_properties(ffi_shared PROPERTIES OUTPUT_NAME ffi)
 
 install(TARGETS ffi_static ffi_shared
