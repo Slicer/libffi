@@ -7,6 +7,7 @@ set(SOURCES_LIST
     src/java_raw_api.c
     src/prep_cif.c
     src/raw_api.c
+    src/tramp.c
     src/types.c)
 
 include(configure_platform.cmake)

@@ -17,6 +17,9 @@
 /* Define this if you want extra debugging. */
 #cmakedefine FFI_DEBUG 1
 
+/* Define this if you want statically defined trampolines */
+#cmakedefine FFI_EXEC_STATIC_TRAMP 1
+
 /* Cannot use PROT_EXEC on this target, so, we revert to alternative means */
 #cmakedefine FFI_EXEC_TRAMPOLINE_TABLE 1
 
@@ -78,6 +81,9 @@
 
 /* Define to 1 if you have the <memory.h> header file. */
 #cmakedefine HAVE_MEMORY_H 1
+
+/* Define to 1 if you have the `mkstemp' function. */
+#cmakedefine HAVE_MKSTEMP 1
 
 /* Define to 1 if you have the `mkostemp' function. */
 #cmakedefine HAVE_MKOSTEMP 1

@@ -118,6 +118,10 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin OR TARGET_PLATFORM MATCHES .*FREEBSD.*)
     set(FFI_MMAP_EXEC_WRIT 1)
 endif()
 
+if(CMAKE_SYSTEM_NAME STREQUAL Linux)
+  set(FFI_EXEC_STATIC_TRAMP 1)
+endif()
+
 check_type_size (double SIZEOF_DOUBLE)
 check_type_size ("long double" SIZEOF_LONG_DOUBLE)
 
@@ -181,6 +185,7 @@ check_symbol_exists(memcpy string.h HAVE_MEMCPY)
 cmake_push_check_state()
 set(CMAKE_REQUIRED_DEFINITIONS "-D_GNU_SOURCE")
 check_symbol_exists(mkostemp stdlib.h HAVE_MKOSTEMP)
+check_symbol_exists(mkstemp stdlib.h HAVE_MKSTEMP)
 cmake_pop_check_state()
 
 if (NOT MSVC)
