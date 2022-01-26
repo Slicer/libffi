@@ -227,7 +227,10 @@ if (NOT MSVC)
         __asm__ __volatile__ (".text; ha: nop; .data; .long ha-.; .text");
     }
     ]==])
-    check_c_source_runs("${check_src}" HAVE_AS_X86_PCREL)
+    set(CMAKE_TRY_COMPILE_TARGET_TYPE_SAVED ${CMAKE_TRY_COMPILE_TARGET_TYPE})
+    set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
+    check_c_source_compiles("${check_src}" HAVE_AS_X86_PCREL)
+    set(CMAKE_TRY_COMPILE_TARGET_TYPE ${CMAKE_TRY_COMPILE_TARGET_TYPE_SAVED})
 
     # Check whether assembler supports unwind section type
     execute_process(
