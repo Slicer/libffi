@@ -12,7 +12,7 @@ official repository.
 What is the branch naming convention ?
 --------------------------------------
 
-Each branch is named following the pattern `libffi-cmake-buildsystem-vY.Y.Z-YYYY-MM-DD-SHA{N}`
+Each branch is named following the pattern `libffi-cmake-buildsystem-vX.Y.Z-YYYY-MM-DD-SHA{N}`
 
 where:
 
